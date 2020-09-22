@@ -8,7 +8,7 @@ make
 ```
 
 ### Prerequisites
-* Ubuntu: ocl-icd-opencl.dev
+* Ubuntu: deb-package(s): ocl-icd-opencl.dev
 * Windows: AMD AMP Sdk
 * Mac OS/X: Xcode
 
