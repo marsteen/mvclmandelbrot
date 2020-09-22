@@ -32,7 +32,7 @@ struct STgaHeader
     unsigned char	mIbyte; /* Image Descriptor Byte */
 };
 
-
+/*
 
 //---------------------------------------------------------------------------
 //
@@ -64,7 +64,7 @@ void WriteTga(const char* Filename, const int* Data, int w, int h, int colorMode
         switch (colorMode)
         {
             case 0: ByteData[i] = (char) ((Data[i] & 1) ? 255 : 1); break;
-            case 1: ByteData[i] = (char) (Data[i] & 0xFF); break;
+            case 1: ByteData[i] = (char) (Data[i] & 0xFF); break;            
         }
     }
 
@@ -81,4 +81,69 @@ void WriteTga(const char* Filename, const int* Data, int w, int h, int colorMode
     }
     delete[] ByteData;
 }
+*/
+
+
+
+//---------------------------------------------------------------------------
+//
+// Klasse:    global
+// Methode:   WriteTga
+//
+// Schreiben einer Datei im 8-Bit TGA-Format (Graustufen)
+//
+//---------------------------------------------------------------------------
+
+void WriteTga(const char* Filename, const int* Data, int w, int h, int colorMode)
+{
+    STgaHeader TgaHeader;
+
+    memset(&TgaHeader, 0, sizeof(STgaHeader));
+    
+    const int pixelSize[] = { 1,1,3 };
+    const int itab[] = 
+    { 
+        ETGA_ITYPE_8BIT_UNCOMPRESSED_MONOCHROME, 
+        ETGA_ITYPE_8BIT_UNCOMPRESSED_MONOCHROME,
+        ETGA_ITYPE_RGB_UNCOMPRESSED
+    };
+
+    TgaHeader.mIbyte = 0x20;
+    TgaHeader.mWidth = w;
+    TgaHeader.mHeight = h;
+    TgaHeader.mPsize = 8 * pixelSize[colorMode];
+    TgaHeader.mItype = itab[colorMode];
+
+    cout << "Writing TGA file.." << endl;
+
+    char* ByteData = new char[w * h * pixelSize[colorMode]];
+    for (int ib = 0, i = 0; i < w * h ; i++)
+    {
+        switch (colorMode)
+        {
+            case 0: ByteData[i] = (char) ((Data[i] & 1) ? 255 : 1); break;
+            case 1: ByteData[i] = (char) (Data[i] & 0xFF); break;            
+            case 2: 
+                ByteData[ib]   = ((Data[i] * 5) & 0xFF);
+                ByteData[ib+1] = ((Data[i] * 2) & 0xFF);
+                ByteData[ib+2] = ((Data[i] * 3) & 0xFF);
+                ib += 3;
+                break;
+        }
+    }
+
+    cout << "ok." << endl;
+
+
+    fstream fs(Filename, std::ios::out | std::ios::binary);
+
+    if (fs.good())
+    {
+        fs.write((const char*)&TgaHeader, sizeof(STgaHeader));
+        fs.write((const char*)ByteData, w * h * pixelSize[colorMode]);
+        fs.close();
+    }
+    delete[] ByteData;
+}
+
 

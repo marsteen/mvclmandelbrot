@@ -152,7 +152,7 @@ int main(int argc, char** argv)
     cout << "         -res [x]  = resolution" << endl;
     cout << "         -lim [x]  = iteration limit" << endl;
     cout << "         -rect [x1,y1,x2,y2]" << endl;
-    cout << "         -cmode [0|1]" << endl;
+    cout << "         -cmode [0|1|2]" << endl;
     cout << "argc=" << argc << endl;
 
     int nKernels = 1024;
