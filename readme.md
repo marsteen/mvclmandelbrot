@@ -1,7 +1,5 @@
 # OpenCL Test Project
 
-Test project for Vulkan applications
-
 ## Building mvclmandelbrot executable
 Change to "project/build" folder and call:
     cmake ..
