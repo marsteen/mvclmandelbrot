@@ -15,7 +15,7 @@ make
 
 ### Test run
 from the folder "project" run script:<br>
-    ```run-float.sh```<br>
+    ```./run-float.sh```<br>
 or:<br>
-    ```run-double.sh```<br>
+    ```./run-double.sh```<br>
 
