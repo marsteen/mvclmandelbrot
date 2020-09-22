@@ -2,8 +2,10 @@
 
 ## Building mvclmandelbrot executable
 Change to "project/build" folder and call:<br>
-    cmake ..<br>
-    make<br>
+´´´
+cmake ..
+make
+´´´
 
 ### Prerequisites
 * Ubuntu: ocl-icd-opencl.dev
