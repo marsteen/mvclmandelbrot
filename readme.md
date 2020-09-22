@@ -1,9 +1,9 @@
 # OpenCL Test Project
 
 ## Building mvclmandelbrot executable
-Change to "project/build" folder and call: 
-    cmake .. 
-    make 
+Change to "project/build" folder and call:<br>
+    cmake ..<br>
+    make<br>
 
 ### Prerequisites
 * Ubuntu: ocl-icd-opencl.dev
@@ -12,8 +12,8 @@ Change to "project/build" folder and call:
 
 
 ### Test run
-from the folder "project" run script: 
-    run-float.sh 
-or: 
-    run-double.sh 
+from the folder "project" run script:
+    run-float.sh
+or:
+    run-double.sh
 
