@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 project("mvclmandelbrot")
 
-include_directories(./source)
+include_directories(./source
+  "/c/Program Files (x86)/AMD APP SDK/3.0/include"
+)
+link_directories("/c/Program Files (x86)/AMD APP SDK/3.0/lib/x86_64")
+
+
 message("System: ${CMAKE_SYSTEM_NAME}")
 
 #
@@ -20,18 +25,12 @@ add_executable(mvclmandelbrot
     source/NStringTool.cpp
     )
 
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ..)
-
-#set_target_properties(mvclmandelbrot PROPERTIES
-#                      RUNTIME_OUTPUT_DIRECTORY_DEBUG .
-#                      RUNTIME_OUTPUT_DIRECTORY_RELEASE ..
-#)
-
 if (CMAKE_SYSTEM_NAME STREQUAL "MSYS")
     #
     # Windows
     #
+    
+    include_directories("/c/Program Files (x86)/AMD APP SDK/3.0/include")
     target_link_libraries(mvclmandelbrot
         OpenCL)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
