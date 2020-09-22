@@ -43,7 +43,7 @@ struct STgaHeader
 //
 //---------------------------------------------------------------------------
 
-void WriteTga(const char* Filename, const int* Data, int w, int h)
+void WriteTga(const char* Filename, const int* Data, int w, int h, int colorMode)
 {
     STgaHeader TgaHeader;
 
@@ -61,7 +61,11 @@ void WriteTga(const char* Filename, const int* Data, int w, int h)
 
     for (int i = 0; i < w*h; i++)
     {
-        ByteData[i] = (char) ((Data[i] & 1) ? 255 : 1);
+        switch (colorMode)
+        {
+            case 0: ByteData[i] = (char) ((Data[i] & 1) ? 255 : 1); break;
+            case 1: ByteData[i] = (char) (Data[i] & 0xFF); break;
+        }
     }
 
     cout << "ok." << endl;
@@ -77,3 +81,4 @@ void WriteTga(const char* Filename, const int* Data, int w, int h)
     }
     delete[] ByteData;
 }
+

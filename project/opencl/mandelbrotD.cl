@@ -12,7 +12,7 @@ __kernel void mandelbrot(__global const double2* kinput,
   double x,y;
   double xc,yc;
   int gid = get_global_id(0);
-	int lim = params[0];
+  int lim = params[0];
 
   koutput[gid] = 255;
  
@@ -29,7 +29,7 @@ __kernel void mandelbrot(__global const double2* kinput,
     {
       koutput[gid] = it + 1; 
       break; // Out!
-		}
+    }
     double twoxy = (double)2*x*y;
     x = x2 - y2 + xc;
     y = twoxy + yc;

@@ -17,7 +17,7 @@ typedef clvec<double, 2>	clvect2d;
 typedef clvec<float, 2>		clvect2f;
 
 
-extern void WriteTga(const char* Filename, const int* Data, int w, int h);
+extern void WriteTga(const char* Filename, const int* Data, int w, int h, int colorMode);
 
 //---------------------------------------------------------------------------
 //
@@ -60,7 +60,7 @@ static void SetRect(clvec<Tfloat, 2>* input, int mdim, double x1, double y1, dou
 //---------------------------------------------------------------------------
 
 template<typename Tfloat>
-void CalcMandelbrot(const char* kernelFile, int mdim, int flimit, double x1, double y1, double x2, double y2)
+void CalcMandelbrot(const char* kernelFile, int mdim, int cmode, int flimit, double x1, double y1, double x2, double y2)
 {
     typedef clvec<Tfloat, 2> clvect2;
     COpenCL<clvect2, int>* opencl = new COpenCL<clvect2, int>;
@@ -74,7 +74,8 @@ void CalcMandelbrot(const char* kernelFile, int mdim, int flimit, double x1, dou
 
 
     //  SetRect(input, mdim, -2.0, -1.5, 1.0, 1.5);
-    //  SetRect(input, -1.4797315064831544,	-0.00044288606420912107,	-1.4797314376239232,	-0.00044281720497790561);
+    
+     //SetRect(input, mdim, -1.4797315064831544,	-0.00044288606420912107,	-1.4797314376239232,	-0.00044281720497790561);
     //  SetRect(input,    -1.4797253558889452,	-0.00045266823155998281,	-1.4797228558584266,	-0.00045016820104137878);
     
     SetRect(input, mdim, x1, y1, x2, y2);
@@ -120,7 +121,7 @@ void CalcMandelbrot(const char* kernelFile, int mdim, int flimit, double x1, dou
 
     cout << "PASS ok." << endl;
 
-    WriteTga("mandelbrot.tga", output, mdim, mdim);
+    WriteTga("mandelbrot.tga", output, mdim, mdim, cmode);
     opencl->CleanUp();
     delete[] output;
     delete[] input;
@@ -143,7 +144,7 @@ enum
 
 int main(int argc, char** argv)
 {
-    cout << "clmandelbrot version 2.0" << endl;
+    cout << "clmandelbrot version 2.1" << endl;
     cout << "options:" << endl;
     cout << "         -file <kernelfile.cl>" << endl;
     cout << "         -double   = double precision" << endl;
@@ -151,11 +152,13 @@ int main(int argc, char** argv)
     cout << "         -res [x]  = resolution" << endl;
     cout << "         -lim [x]  = iteration limit" << endl;
     cout << "         -rect [x1,y1,x2,y2]" << endl;
+    cout << "         -cmode [0|1]" << endl;
     cout << "argc=" << argc << endl;
 
     int nKernels = 1024;
     int prec = FPREC_FLOAT;
     int mdim = 1024;
+    int cmode = 0;
     int flimit = 255;   // Anzahl der Interationen fuer Mandelbrot
     double x1 = -2.0;
     double y1 = -1.5;
@@ -211,6 +214,14 @@ int main(int argc, char** argv)
             }
         }
         else
+        if (cmd == "-cmode")
+        {
+            if (i < argc-1)
+            {
+                cmode = NStringTool::Cast<int>(argv[i + 1]);
+            }
+        }
+        else
         if (cmd == "-rect")
         {
             if (i < argc-1)
@@ -231,11 +242,11 @@ int main(int argc, char** argv)
 
     if (prec == FPREC_FLOAT)
     {
-        CalcMandelbrot<float>(kernelFile, mdim, flimit, x1, y1, x2, y2);
+        CalcMandelbrot<float>(kernelFile, mdim, cmode, flimit, x1, y1, x2, y2);
     }
     else
     {
-        CalcMandelbrot<double>(kernelFile, mdim, flimit, x1, y1, x2, y2);
+        CalcMandelbrot<double>(kernelFile, mdim, cmode, flimit, x1, y1, x2, y2);
     }
 
     return 0;
