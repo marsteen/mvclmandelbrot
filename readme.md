@@ -2,10 +2,10 @@
 
 ## Building mvclmandelbrot executable
 Change to "project/build" folder and call:<br>
-´´´
+```
 cmake ..
 make
-´´´
+```
 
 ### Prerequisites
 * Ubuntu: ocl-icd-opencl.dev
@@ -14,8 +14,8 @@ make
 
 
 ### Test run
-from the folder "project" run script:
-    run-float.sh
+from the folder "project" run script:<br>
+    ```run-float.sh```
 or:
-    run-double.sh
+    ```run-double.sh```
 
