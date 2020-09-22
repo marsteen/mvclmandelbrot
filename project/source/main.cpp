@@ -6,16 +6,6 @@
 //
 //---------------------------------------------------------------------------
 
-//
-// Book:      OpenCL(R) Programming Guide
-// Authors:   Aaftab Munshi, Benedict Gaster, Timothy Mattson, James Fung, Dan Ginsburg
-// ISBN-10:   0-321-74964-2
-// ISBN-13:   978-0-321-74964-2
-// Publisher: Addison-Wesley Professional
-// URLs:      http://safari.informit.com/9780132488006/
-//            http://www.openclprogrammingguide.com
-//
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -24,9 +14,6 @@
 #include <NStringTool.h>
 
 using namespace std;
-
-// Uncomment for double-Precision (if supported by graphics card):
-
 
 typedef clvec<double, 2>	clvect2d;
 typedef clvec<float, 2>		clvect2f;
@@ -91,14 +78,15 @@ void CalcMandelbrot(const char* kernelFile, int mdim, int flimit, double x1, dou
 
     cout << "CalcMandelbrot START msize=" << msize << endl;
 
-    //SetRect(input, mdim, -2.0, -1.5, 1.0, 1.5);
+
+    //  SetRect(input, mdim, -2.0, -1.5, 1.0, 1.5);
+    //  SetRect(input, -1.4797315064831544,	-0.00044288606420912107,	-1.4797314376239232,	-0.00044281720497790561);
+    //  SetRect(input,    -1.4797253558889452,	-0.00045266823155998281,	-1.4797228558584266,	-0.00045016820104137878);
+    
     SetRect(input, mdim, x1, y1, x2, y2);
 
     cout << "SetRect OK" << endl;
 
-//	SetRect(input, -1.4797315064831544,	-0.00044288606420912107,	-1.4797314376239232,	-0.00044281720497790561);
-
-    //SetRect(input,    -1.4797253558889452,	-0.00045266823155998281,	-1.4797228558584266,	-0.00045016820104137878);
 
 
     try
@@ -259,58 +247,6 @@ int main(int argc, char** argv)
     {
         CalcMandelbrot<double>(kernelFile, mdim, flimit, x1, y1, x2, y2);
     }
-
-    /*
-     * cout <<  "1.0" << endl;
-     *
-     *
-     #ifdef USE_DOUBLEs
-     * COpenCL<clvecd2, int>* opencl = new COpenCL<clvecd2, int>;
-     #else
-     * COpenCL<clvecf2, int>* opencl = new COpenCL<clvecf2, int>;
-     #endif
-     *
-     *
-     * SetRect(input, -2.0, -1.5, 1.0, 1.5);
-     *
-     * //	SetRect(input, -1.4797315064831544,	-0.00044288606420912107,	-1.4797314376239232,	-0.00044281720497790561);
-     *
-     * //SetRect(input,     -1.4797253558889452,	-0.00045266823155998281,	-1.4797228558584266,	-0.00045016820104137878);
-     *
-     *
-     * try
-     * {
-     #ifdef USE_DOUBLE
-     *  opencl->Init("mandelbrotD.cl", input, MSIZE, output, MSIZE);
-     #else
-     *  opencl->Init("mandelbrot.cl", input, MSIZE, output, MSIZE);
-     #endif
-     *
-     *  //
-     *  // PASS 1:
-     *  //
-     *  cout << "pass 1" << endl;
-     *
-     * opencl->Execute(nKernels);
-     *
-     *  cout << "ok" << endl;
-     *  opencl->ReadBuffer();
-     *
-     * }
-     * catch (CException ex)
-     * {
-     *  cout << "***** Error in: " << ex.mErrstr << " "  << ex.mErrnum << endl;
-     * }
-     *
-     *
-     * // Output the result buffer
-     *
-     * cout << "PASS ok." << endl;
-     *
-     * WriteTga("mandelbrot.tga", output, MDIM, MDIM);
-     * opencl->CleanUp();
-     * delete opencl;
-     */
 
     return 0;
 }
