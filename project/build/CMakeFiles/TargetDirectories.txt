@@ -1,0 +1,3 @@
+/Users/martin.steen/projekte/github/mvclmandelbrot/project/build/CMakeFiles/rebuild_cache.dir
+/Users/martin.steen/projekte/github/mvclmandelbrot/project/build/CMakeFiles/edit_cache.dir
+/Users/martin.steen/projekte/github/mvclmandelbrot/project/build/CMakeFiles/mvclmandelbrot.dir

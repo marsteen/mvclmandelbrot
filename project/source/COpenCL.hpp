@@ -10,7 +10,7 @@
 
 // HelloWorld.cpp
 //
-//    This is a simple example that demonstrates basic OpenCL setup and 
+//    This is a simple example that demonstrates basic OpenCL setup and
 //    use.
 
 #include <iostream>
@@ -31,7 +31,7 @@
 //  either a GPU or CPU depending on what is available.
 //
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 cl_context COpenCL<TINP, TOUT>::CreateContext()
 {
     cl_int errNum;
@@ -43,7 +43,7 @@ cl_context COpenCL<TINP, TOUT>::CreateContext()
     // simply choose the first available platform.  Normally, you would
     // query for all available platforms and select the most appropriate one.
     errNum = clGetPlatformIDs(1, &firstPlatformId, &numPlatforms);
-    if (errNum != CL_SUCCESS || numPlatforms <= 0)
+    if ((errNum != CL_SUCCESS) || (numPlatforms <= 0))
     {
         std::cerr << "Failed to find any OpenCL platforms." << std::endl;
         return NULL;
@@ -58,13 +58,14 @@ cl_context COpenCL<TINP, TOUT>::CreateContext()
         (cl_context_properties)firstPlatformId,
         0
     };
+
     context = clCreateContextFromType(contextProperties, CL_DEVICE_TYPE_GPU,
-                                      NULL, NULL, &errNum);
+            NULL, NULL, &errNum);
     if (errNum != CL_SUCCESS)
     {
         std::cout << "Could not create GPU context, trying CPU..." << std::endl;
         context = clCreateContextFromType(contextProperties, CL_DEVICE_TYPE_CPU,
-                                          NULL, NULL, &errNum);
+                NULL, NULL, &errNum);
         if (errNum != CL_SUCCESS)
         {
             std::cerr << "Failed to create an OpenCL GPU or CPU context." << std::endl;
@@ -75,16 +76,17 @@ cl_context COpenCL<TINP, TOUT>::CreateContext()
     return context;
 }
 
+
 ///
 //  Create a command queue on the first device available on the
 //  context
 //
 
-template <typename TINP, typename TOUT>
-cl_command_queue COpenCL<TINP, TOUT>::CreateCommandQueue(cl_context context, cl_device_id *device)
+template<typename TINP, typename TOUT>
+cl_command_queue COpenCL<TINP, TOUT>::CreateCommandQueue(cl_context context, cl_device_id* device)
 {
     cl_int errNum;
-    cl_device_id *devices;
+    cl_device_id* devices;
     cl_command_queue commandQueue = NULL;
     size_t deviceBufferSize = -1;
 
@@ -115,17 +117,15 @@ cl_command_queue COpenCL<TINP, TOUT>::CreateCommandQueue(cl_context context, cl_
     // In this example, we just choose the first available device.  In a
     // real program, you would likely use all available devices or choose
     // the highest performance device based on OpenCL device queries
-    
-    #ifdef __APPLE__
-    commandQueue = clCreateCommandQueue(context, devices[0], 0, NULL);
-		#else
-		commandQueue = clCreateCommandQueueWithProperties(context, devices[0], 0, NULL);
-		#endif
 
-    
-		
-		
-		
+#ifdef __APPLE__
+    commandQueue = clCreateCommandQueue(context, devices[0], 0, NULL);
+#else
+    commandQueue = clCreateCommandQueueWithProperties(context, devices[0], 0, NULL);
+#endif
+
+
+
     if (commandQueue == NULL)
     {
         delete [] devices;
@@ -138,17 +138,19 @@ cl_command_queue COpenCL<TINP, TOUT>::CreateCommandQueue(cl_context context, cl_
     return commandQueue;
 }
 
+
 //
 //  Create an OpenCL program from the kernel source file
 //
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 cl_program COpenCL<TINP, TOUT>::CreateProgram(cl_context context, cl_device_id device, const char* fileName)
 {
     cl_int errNum;
     cl_program program;
 
     std::ifstream kernelFile(fileName, std::ios::in);
+
     if (!kernelFile.is_open())
     {
         std::cerr << "Failed to open file for reading: " << fileName << std::endl;
@@ -156,13 +158,15 @@ cl_program COpenCL<TINP, TOUT>::CreateProgram(cl_context context, cl_device_id d
     }
 
     std::ostringstream oss;
+
     oss << kernelFile.rdbuf();
 
     std::string srcStdStr = oss.str();
-    const char *srcStr = srcStdStr.c_str();
+    const char* srcStr = srcStdStr.c_str();
+
     program = clCreateProgramWithSource(context, 1,
-                                        (const char**)&srcStr,
-                                        NULL, NULL);
+            (const char**)&srcStr,
+            NULL, NULL);
     if (program == NULL)
     {
         std::cerr << "Failed to create CL program from source." << std::endl;
@@ -175,7 +179,7 @@ cl_program COpenCL<TINP, TOUT>::CreateProgram(cl_context context, cl_device_id d
         // Determine the reason for the error
         char buildLog[16384];
         clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG,
-                              sizeof(buildLog), buildLog, NULL);
+            sizeof(buildLog), buildLog, NULL);
 
         std::cerr << "Error in kernel: " << std::endl;
         std::cerr << buildLog;
@@ -191,28 +195,38 @@ cl_program COpenCL<TINP, TOUT>::CreateProgram(cl_context context, cl_device_id d
 //  Cleanup any created OpenCL resources
 //
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 void COpenCL<TINP, TOUT>::Cleanup(cl_context context, cl_command_queue commandQueue,
-             cl_program program, cl_kernel kernel, cl_mem memObjects[2])
+    cl_program program, cl_kernel kernel, cl_mem memObjects[2])
 {
     for (int i = 0; i < 2; i++)
     {
         if (memObjects[i] != 0)
+        {
             clReleaseMemObject(memObjects[i]);
+        }
     }
     if (commandQueue != 0)
+    {
         clReleaseCommandQueue(commandQueue);
+    }
 
     if (kernel != 0)
+    {
         clReleaseKernel(kernel);
+    }
 
     if (program != 0)
+    {
         clReleaseProgram(program);
+    }
 
     if (context != 0)
+    {
         clReleaseContext(context);
-
+    }
 }
+
 
 ///
 //  Create memory objects used as the arguments to the kernel
@@ -220,21 +234,21 @@ void COpenCL<TINP, TOUT>::Cleanup(cl_context context, cl_command_queue commandQu
 //  and b (input)
 //
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 bool COpenCL<TINP, TOUT>::CreateBuffers()
 {
     memObjects[0] = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                   sizeof(TINP) * mSizeIn, mInputArray, NULL);
-		
-    memObjects[1] = clCreateBuffer(context, CL_MEM_READ_WRITE,
-                                   sizeof(TOUT) * mSizeOut, NULL, NULL);
-		
-    memObjects[2] = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                   sizeof(int) * 8, mGlobalParams, NULL);
-		
-		
+            sizeof(TINP) * mSizeIn, mInputArray, NULL);
 
-    if (memObjects[0] == NULL || memObjects[1] == NULL)
+    memObjects[1] = clCreateBuffer(context, CL_MEM_READ_WRITE,
+            sizeof(TOUT) * mSizeOut, NULL, NULL);
+
+    memObjects[2] = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+            sizeof(int) * 8, mGlobalParams, NULL);
+
+
+
+    if ((memObjects[0] == NULL) || (memObjects[1] == NULL))
     {
         std::cerr << "Error creating memory objects." << std::endl;
         return false;
@@ -244,10 +258,10 @@ bool COpenCL<TINP, TOUT>::CreateBuffers()
 }
 
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 void COpenCL<TINP, TOUT>::SetGlobalParam(int index, int value)
 {
-  mGlobalParams[index] = value;	
+    mGlobalParams[index] = value;
 }
 
 
@@ -259,11 +273,12 @@ void COpenCL<TINP, TOUT>::SetGlobalParam(int index, int value)
 //
 //---------------------------------------------------------------------------
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 void COpenCL<TINP, TOUT>::CleanUp()
 {
-  Cleanup(context, commandQueue, program, kernel, memObjects);
+    Cleanup(context, commandQueue, program, kernel, memObjects);
 }
+
 
 //---------------------------------------------------------------------------
 //
@@ -273,24 +288,23 @@ void COpenCL<TINP, TOUT>::CleanUp()
 //
 //---------------------------------------------------------------------------
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 int COpenCL<TINP, TOUT>::ReadBuffer()
 {
-  int r = 0;
+    int r = 0;
 
-	errNum = clEnqueueReadBuffer(commandQueue, memObjects[1], CL_TRUE,
-		                           0, mSizeOut * sizeof(TOUT), mOutputArray,
-		                           0, NULL, NULL);
-	if (errNum != CL_SUCCESS)
-	{
-		  std::cerr << "Error reading result buffer." << std::endl;
-		  Cleanup(context, commandQueue, program, kernel, memObjects);
-		  throw CException(4, __func__);
-		  r = 1;
-	}
-	return r;
+    errNum = clEnqueueReadBuffer(commandQueue, memObjects[1], CL_TRUE,
+            0, mSizeOut * sizeof(TOUT), mOutputArray,
+            0, NULL, NULL);
+    if (errNum != CL_SUCCESS)
+    {
+        std::cerr << "Error reading result buffer." << std::endl;
+        Cleanup(context, commandQueue, program, kernel, memObjects);
+        throw CException(4, __func__);
+        r = 1;
+    }
+    return r;
 }
-
 
 
 //---------------------------------------------------------------------------
@@ -301,20 +315,21 @@ int COpenCL<TINP, TOUT>::ReadBuffer()
 //
 //---------------------------------------------------------------------------
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 bool COpenCL<TINP, TOUT>::Init(const char* KernelFileCL, TINP* inp, int sizein, TOUT* out, int sizeout)
 {
     int r = 0;
+
     context = 0;
     commandQueue = 0;
     program = 0;
     device = 0;
     kernel = 0;
 
-		mInputArray  = inp;
-		mOutputArray = out;
-    mSizeIn      = sizein;
-    mSizeOut     = sizeout;
+    mInputArray = inp;
+    mOutputArray = out;
+    mSizeIn = sizein;
+    mSizeOut = sizeout;
 
     // Create an OpenCL context on first available platform
     context = CreateContext();
@@ -353,14 +368,15 @@ bool COpenCL<TINP, TOUT>::Init(const char* KernelFileCL, TINP* inp, int sizein, 
     }
 
     if (CreateMemObjects())
-		{
-      throw CException(4, __func__);
-			r = 1;
-		}
+    {
+        throw CException(4, __func__);
+        r = 1;
+    }
 
 
-	return r;
+    return r;
 }
+
 
 //---------------------------------------------------------------------------
 //
@@ -370,32 +386,33 @@ bool COpenCL<TINP, TOUT>::Init(const char* KernelFileCL, TINP* inp, int sizein, 
 //
 //---------------------------------------------------------------------------
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 int COpenCL<TINP, TOUT>::CreateMemObjects()
 {
-  int r = 0;
+    int r = 0;
 
-  if (!CreateBuffers())
-  {
-      Cleanup(context, commandQueue, program, kernel, memObjects);
-		  throw CException(2);
-      return 1;
-  }
+    if (!CreateBuffers())
+    {
+        Cleanup(context, commandQueue, program, kernel, memObjects);
+        throw CException(2);
+        return 1;
+    }
 
-  // Set the kernel arguments (result, a, b)
-  errNum  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &memObjects[0]);
-  errNum |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &memObjects[1]);
-	errNum |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &memObjects[2]);
-	
-  if (errNum != CL_SUCCESS)
-  {
-      std::cerr << "Error setting kernel arguments." << std::endl;
-      Cleanup(context, commandQueue, program, kernel, memObjects);
-		  throw CException(2, __func__);
-      r = 1;
-	}
-  return r;
+    // Set the kernel arguments (result, a, b)
+    errNum = clSetKernelArg(kernel, 0, sizeof(cl_mem), &memObjects[0]);
+    errNum |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &memObjects[1]);
+    errNum |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &memObjects[2]);
+
+    if (errNum != CL_SUCCESS)
+    {
+        std::cerr << "Error setting kernel arguments." << std::endl;
+        Cleanup(context, commandQueue, program, kernel, memObjects);
+        throw CException(2, __func__);
+        r = 1;
+    }
+    return r;
 }
+
 
 //---------------------------------------------------------------------------
 //
@@ -405,17 +422,18 @@ int COpenCL<TINP, TOUT>::CreateMemObjects()
 //
 //---------------------------------------------------------------------------
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 void COpenCL<TINP, TOUT>::RefreshInput()
 {
-	clReleaseMemObject(memObjects[0]);
+    clReleaseMemObject(memObjects[0]);
 
-  memObjects[0] = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                   sizeof(TINP) * mSizeIn, mInputArray, NULL);
+    memObjects[0] = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+            sizeof(TINP) * mSizeIn, mInputArray, NULL);
 
 
-  clSetKernelArg(kernel, 0, sizeof(cl_mem), &memObjects[0]);
+    clSetKernelArg(kernel, 0, sizeof(cl_mem), &memObjects[0]);
 }
+
 
 //---------------------------------------------------------------------------
 //
@@ -425,35 +443,34 @@ void COpenCL<TINP, TOUT>::RefreshInput()
 //
 //---------------------------------------------------------------------------
 
-template <typename TINP, typename TOUT>
+template<typename TINP, typename TOUT>
 int COpenCL<TINP, TOUT>::Execute(int nKernels)
 {
-		int r = 0;		
+    int r = 0;
     size_t globalWorkSize[1];
     size_t localWorkSize[1];
 
     globalWorkSize[0] = mSizeIn;
-		localWorkSize[0]  = mSizeIn / nKernels;;
+    localWorkSize[0] = mSizeIn / nKernels;
 
-		
-		std::cout << "Input size=" << mSizeIn << std::endl;
-		std::cout << "Kernels   =" << nKernels << std::endl;
-		std::cout << "Local size=" << localWorkSize[0] << std::endl;
-		
+
+    std::cout << "Input size=" << mSizeIn << std::endl;
+    std::cout << "Kernels   =" << nKernels << std::endl;
+    std::cout << "Local size=" << localWorkSize[0] << std::endl;
+
 
     // Queue the kernel up for execution across the array
 
-	  errNum = clEnqueueNDRangeKernel(commandQueue, kernel, 1, NULL,
-	                                  globalWorkSize, localWorkSize,
-	                                  0, NULL, NULL);
+    errNum = clEnqueueNDRangeKernel(commandQueue, kernel, 1, NULL,
+            globalWorkSize, localWorkSize,
+            0, NULL, NULL);
 
     if (errNum != CL_SUCCESS)
     {
         std::cerr << "Error queuing kernel for execution." << std::endl;
         Cleanup(context, commandQueue, program, kernel, memObjects);
-			  throw CException(3, __func__);
+        throw CException(3, __func__);
         r = 1;
     }
     return r;
 }
-

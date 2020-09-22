@@ -16,23 +16,17 @@ else
   OS_SYS := $(shell uname -s)
 endif
 
-
-CLPATH    = /opt/AMDAPPSDK-3.0
-#
-LIBGL_DRIVERS_PATH = $(CLPATH)/lib/x86_64 
 #
 .SUFFIXES : .cpp .o
 #
 #
 #
-CPPFILES = main.cpp \
-           NStringTool.cpp \
-           WriteTga.cpp
+CPPFILES = ./source/main.cpp \
+           ./source/NStringTool.cpp \
+           ./source/WriteTga.cpp
 #
-CCFLAGS = -O2 $(INCPATH)
+CCFLAGS = -O2 -I./source
 #
-#
-
 #
 #
 TARGET   = clmandelbrot
@@ -54,17 +48,13 @@ clean:
 OBJECTS1 = $(CPPFILES:.cpp=.o)
 OBJECTS2 = $(CFILES:.c=.o)
 #
-
 #
 ifeq ($(OS_SYS),Darwin)
   LDFLAGS = -lm -framework OpenCL
-  INCPATH = -I.
 endif
 ifeq ($(OS_SYS),Linux)
   LDFLAGS = -lm -lOpenCL
-  LIBPATH = -L$(CLPATH)/lib/x86_64
-  INCPATH   = -I. -I$(CLPATH)/include
-endif  
+endif
 
 #
 $(TARGET) : $(OBJECTS1) $(OBJECTS2)
