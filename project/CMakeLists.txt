@@ -9,7 +9,7 @@ include_directories(./source)
 # AMD SPP SDK (Window only):
 #
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "MSYS")
+if (CMAKE_SYSTEM_NAME STREQUAL "MSYS")
     include_directories("/c/Program Files (x86)/AMD APP SDK/3.0/include")
     link_directories("/c/Program Files (x86)/AMD APP SDK/3.0/lib/x86_64")
 endif()
