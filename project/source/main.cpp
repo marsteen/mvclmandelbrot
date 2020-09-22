@@ -173,6 +173,7 @@ int main(int argc, char** argv)
             kernelFile = argv[i + 1];
             i += 1;
         }
+        else
         if (cmd == "-kernels")
         {
             if (i < argc-1)
