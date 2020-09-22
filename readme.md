@@ -1,6 +1,6 @@
 # OpenCL Test Project
 
-## Building mvclmandelbrot executable
+## Building the mvclmandelbrot executable
 Change to "project/build" folder and call:<br>
 ```
 cmake ..
