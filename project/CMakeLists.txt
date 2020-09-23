@@ -5,25 +5,35 @@ message("System: ${CMAKE_SYSTEM_NAME}")
 
 include_directories(./source)
 
+
+add_compile_definitions(CL_TARGET_OPENCL_VERSION=210)
 #
 # AMD SPP SDK (Window only):
 #
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    include_directories("/opt/rocm/opencl/include")
+    link_directories("/opt/rocm/opencl/lib")
+endif()
+
+
 
 if (CMAKE_SYSTEM_NAME STREQUAL "MSYS")
     include_directories("/c/Program Files (x86)/AMD APP SDK/3.0/include")
     link_directories("/c/Program Files (x86)/AMD APP SDK/3.0/lib/x86_64")
 endif()
 
+
 #
 # OPENCL
 #
 
-find_package(OPENCL REQUIRED)
-if (OPENCL_FOUND)
-    message("found OPENCL")
-    include_directories($(OPENCL_INCLUDE_DIRS))
-    link_libraries(${OPENCL_LIBRARIES})
-endif()
+#find_package(OPENCL REQUIRED)
+#if (OPENCL_FOUND)
+#    message("found OPENCL")
+#    include_directories($(OPENCL_INCLUDE_DIRS))
+#    link_libraries(${OPENCL_LIBRARIES})
+#endif()
 
 #
 #
